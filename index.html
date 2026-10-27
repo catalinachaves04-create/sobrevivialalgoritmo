@@ -15,7 +15,6 @@
   --floor: #e3cba6;
   --wall: #5a3a24;
   --line: #cfb48c;
-  box-sizing: border-box;
 }
 html, body { height: 100%; margin: 0; padding: 0; }
 * { box-sizing: border-box; }
@@ -23,12 +22,16 @@ html, body { height: 100%; margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: Georgia, "Iowan Old Style", Palatino, serif;
+  font-family: Georgia, serif;
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
-/* Manejo de Pantallas */
+/* Pantallas superpuestas */
 .screen-view {
   position: fixed;
   inset: 0;
@@ -38,10 +41,11 @@ body {
   justify-content: center;
   padding: 20px;
   text-align: center;
-  z-index: 5;
+  background: var(--bg);
+  z-index: 50;
 }
-#start-screen { background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%); z-index: 10; }
-#intro-screen { background: #140a04; z-index: 20; }
+#start-screen { background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%); z-index: 60; }
+#intro-screen { background: #140a04; z-index: 70; }
 
 .title-card {
   background: var(--panel);
@@ -52,36 +56,21 @@ body {
   width: 100%;
   box-shadow: 0 12px 40px rgba(0,0,0,0.3);
 }
-h1.main-title { font-size: 26px; margin: 0 0 12px; color: var(--accent); line-height: 1.3; }
+h1.main-title { font-size: 26px; margin: 0 0 12px; color: var(--accent); }
 p.subtitle { font-size: 16px; color: var(--muted); margin: 0 0 24px; }
 
-/* Reproductor de Video */
 .video-wrapper {
   max-width: 640px;
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
   border: 3px solid var(--accent);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   background: #000;
   margin-bottom: 20px;
 }
 .video-wrapper video { width: 100%; height: auto; display: block; }
 
-/* Interfaz Principal del Juego */
-main#main-game {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  gap: 10px;
-  padding: 12px;
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
+/* Interfaz del juego visible por defecto tras ocultar pantallas */
 header {
   width: 100%;
   max-width: 720px;
@@ -89,6 +78,8 @@ header {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  padding: 0 12px;
+  margin-bottom: 6px;
 }
 h1.game-head { font-size: 20px; margin: 0; }
 .hud { display: flex; gap: 10px; align-items: center; font-size: 15px; }
@@ -111,13 +102,14 @@ canvas {
   touch-action: none;
   max-width: 100%;
 }
-#msg { margin: 0; color: var(--muted); font-size: 15px; text-align: center; min-height: 22px; }
+#msg { margin: 6px 0 0; color: var(--muted); font-size: 15px; text-align: center; min-height: 22px; }
 
 .pad {
   display: none;
   grid-template-columns: repeat(3,56px);
   grid-template-rows: repeat(2,56px);
   gap: 6px;
+  margin-top: 6px;
 }
 .pad button { background: var(--panel); border: 2px solid var(--line); border-radius: 12px; font-size: 22px; touch-action: none; }
 .pad .u { grid-column: 2; }
@@ -177,26 +169,24 @@ canvas {
   <button class="btn" id="play-game-btn">Saltar e ir al juego ➔</button>
 </div>
 
-<!-- 3. Juego de Laberinto -->
-<main id="main-game">
-  <header>
-    <h1 class="game-head">☕ Laberinto del café</h1>
-    <div class="hud">
-      <span class="chip" id="hud">Granos 0/4</span>
-      <button class="btn" id="restart" style="padding: 4px 12px; font-size: 14px;">Reiniciar</button>
-    </div>
-  </header>
-
-  <canvas id="cv" aria-label="Laberinto interactivo"></canvas>
-  <p id="msg" aria-live="polite"></p>
-
-  <div class="pad" aria-hidden="true">
-    <button class="u" data-d="0">▲</button>
-    <button data-d="3" style="grid-row:2;grid-column:1">◀</button>
-    <button data-d="2" style="grid-row:2;grid-column:2">▼</button>
-    <button data-d="1" style="grid-row:2;grid-column:3">▶</button>
+<!-- 3. Juego de Laberinto (Estructura directa sin contenedores ocultos complejos) -->
+<header>
+  <h1 class="game-head">☕ Laberinto del café</h1>
+  <div class="hud">
+    <span class="chip" id="hud">Granos 0/4</span>
+    <button class="btn" id="restart" style="padding: 4px 12px; font-size: 14px;">Reiniciar</button>
   </div>
-</main>
+</header>
+
+<canvas id="cv" aria-label="Laberinto interactivo"></canvas>
+<p id="msg" aria-live="polite"></p>
+
+<div class="pad" aria-hidden="true">
+  <button class="u" data-d="0">▲</button>
+  <button data-d="3" style="grid-row:2;grid-column:1">◀</button>
+  <button data-d="2" style="grid-row:2;grid-column:2">▼</button>
+  <button data-d="1" style="grid-row:2;grid-column:3">▶</button>
+</div>
 
 <!-- Modal de Decisiones -->
 <div class="overlay" id="modal" hidden>
@@ -235,15 +225,11 @@ var ENDS = {
   2: "Sofía vuelve a hacer el contenido con el local refaccionado y una idea más atractiva. El video tiene muy buenos resultados. La cafetería se mantiene en pie."
 };
 
-// Inicializamos W con una cuadrícula básica por defecto para que nunca sea undefined
-var W = []; for (var r = 0; r < N; r++){ W[r] = []; for (var c = 0; c < N; c++) W[r][c] = [1,1,1,1]; }
-var beans = [], path = [], S = 400, held = [], mv = null, pr = 0, pc = 0, branch = null, pend = 0, modalOn = false, over = false, curBean = 0, collected = 0, cell = 40, C = {floor: "#e3cba6", wall: "#5a3a24", accent: "#a8691c"}, last = 0;
+var W = [], beans = [], path = [], S = 400, held = [], mv = null, pr = 0, pc = 0, branch = null, pend = 0, modalOn = false, over = false, curBean = 0, collected = 0, cell = 40, C = {floor: "#e3cba6", wall: "#5a3a24", accent: "#a8691c"}, last = 0;
 var videoEl = document.getElementById("intro-video");
 
-// Generar laberinto inmediatamente al cargar para evitar datos vacíos
 gen();
 
-// Cambio de Pantallas
 document.getElementById("start-btn").onclick = function() {
   document.getElementById("start-screen").style.display = "none";
   document.getElementById("intro-screen").style.display = "flex";
@@ -255,9 +241,7 @@ document.getElementById("play-game-btn").onclick = startGame;
 
 function startGame(){
   videoEl.pause();
-  document.getElementById("start-screen").style.display = "none";
   document.getElementById("intro-screen").style.display = "none";
-  document.getElementById("main-game").style.display = "flex";
   resize();
   newGame();
 }
@@ -299,7 +283,7 @@ function setMsg(t){ document.getElementById("msg").textContent = t; }
 
 function resize(){
   var coarse = matchMedia("(pointer:coarse)").matches;
-  S = Math.max(240, Math.min(window.innerWidth - 30, window.innerHeight - (coarse ? 330 : 190), 720));
+  S = Math.max(240, Math.min(window.innerWidth - 30, window.innerHeight - (coarse ? 280 : 160), 720));
   var dpr = window.devicePixelRatio || 1;
   cv.style.width = cv.style.height = S + "px"; cv.width = cv.height = Math.round(S * dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0); cell = S / N;
@@ -379,7 +363,7 @@ function ending(n){
 
 function frame(t){
   var dt = Math.min(50, t - last); last = t;
-  if (!modalOn && !over && document.getElementById("main-game").style.display !== 'none'){
+  if (!modalOn && !over && document.getElementById("intro-screen").style.display === 'none' && document.getElementById("start-screen").style.display === 'none'){
     if (!mv && held.length) tryMove(held[held.length-1]);
     if (mv){ mv.t += dt / 130; if (mv.t >= 1) arrive(); }
   }
@@ -387,7 +371,7 @@ function frame(t){
 }
 
 function draw(t){
-  if (document.getElementById("main-game").style.display === 'none') return;
+  if (document.getElementById("intro-screen").style.display !== 'none' || document.getElementById("start-screen").style.display !== 'none') return;
   loadColors();
   ctx.clearRect(0,0,S,S); 
   ctx.fillStyle = C.floor; 
@@ -419,4 +403,26 @@ function draw(t){
   }
 
   var fr = pr, fc = pc;
-  if (mv){ var e = mv.t < 1 ?
+  if (mv){ var e = mv.t < 1 ? mv.t : 1; fr = mv.fr + (mv.tr - mv.fr)*e; fc = mv.fc + (mv.tc - mv.fc)*e; }
+  ctx.font = cell*0.62 + "px serif"; ctx.fillStyle = "#000";
+  ctx.fillText("☕", (fc+0.5)*cell, (fr+0.54)*cell);
+}
+
+document.addEventListener("keydown", function(e){
+  if (modalOn){ var i = parseInt(e.key, 10) - 1, bs = document.querySelectorAll("#mopts .opt"); if (bs[i]) bs[i].click(); return; }
+  if (e.key in KEYS){ e.preventDefault(); var d = KEYS[e.key]; if (held.indexOf(d) < 0) held.push(d); }
+});
+document.addEventListener("keyup", function(e){
+  if (e.key in KEYS) held = held.filter(function(d){ return d !== KEYS[e.key]; });
+});
+document.querySelectorAll(".pad button").forEach(function(b){
+  var d = +b.dataset.d;
+  b.addEventListener("pointerdown", function(e){ e.preventDefault(); if (held.indexOf(d) < 0) held.push(d); });
+  ["pointerup","pointerleave","pointercancel"].forEach(function(n){ b.addEventListener(n, function(){ held = held.filter(function(x){ return x !== d; }); }); });
+});
+document.getElementById("restart").onclick = newGame;
+window.addEventListener("resize", resize);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

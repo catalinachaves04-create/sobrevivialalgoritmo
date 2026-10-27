@@ -17,12 +17,6 @@
   --line: #cfb48c;
   box-sizing: border-box;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1e130c; --panel: #2e1d12; --ink: #f3e4c9; --muted: #b99b78;
-    --accent: #e0ad4a; --accent-ink: #241505; --floor: #3d2a1c; --wall: #c99a5b; --line: #4f3624;
-  }
-}
 html, body { height: 100%; margin: 0; padding: 0; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -241,7 +235,7 @@ var ENDS = {
   2: "Sofía vuelve a hacer el contenido con el local refaccionado y una idea más atractiva. El video tiene muy buenos resultados. La cafetería se mantiene en pie."
 };
 
-var W, beans, path, S, held = [], mv = null, pr, pc, branch, pend, modalOn, over, curBean, collected, cell = 40, C = {}, last = 0;
+var W, beans, path, S, held = [], mv = null, pr, pc, branch, pend, modalOn, over, curBean, collected, cell = 40, C = {floor: "#e3cba6", wall: "#5a3a24", accent: "#a8691c"}, last = 0;
 var videoEl = document.getElementById("intro-video");
 
 // Cambio de Pantallas
@@ -310,7 +304,9 @@ function resize(){
 
 function loadColors(){
   var cs = getComputedStyle(document.documentElement);
-  ["floor","wall","accent"].forEach(function(n){ C[n] = cs.getPropertyValue("--" + n).trim(); });
+  var f = cs.getPropertyValue("--floor").trim(); if(f) C.floor = f;
+  var w = cs.getPropertyValue("--wall").trim(); if(w) C.wall = w;
+  var a = cs.getPropertyValue("--accent").trim(); if(a) C.accent = a;
 }
 
 function tryMove(d){
@@ -390,26 +386,37 @@ function frame(t){
 function draw(t){
   if (document.getElementById("main-game").style.display === 'none') return;
   loadColors();
-  ctx.clearRect(0,0,S,S); ctx.fillStyle = C.floor; ctx.fillRect(0,0,S,S);
+  ctx.clearRect(0,0,S,S); 
+  ctx.fillStyle = C.floor; 
+  ctx.fillRect(0,0,S,S);
+  
+  if (!W) return; // Seguridad si el laberinto no se generó aún
+
   var r, c;
   for (r = 0; r < N; r++) for (c = 0; c < N; c++) if ((r+c) % 2){ ctx.fillStyle = "rgba(0,0,0,.05)"; ctx.fillRect(c*cell, r*cell, cell, cell); }
+  
   ctx.font = "bold " + cell*0.26 + "px Georgia,serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   ctx.fillStyle = "#2f9e57"; ctx.fillRect(0, 0, cell, cell);
   ctx.fillStyle = "#c8402e"; ctx.fillRect((N-1)*cell, (N-1)*cell, cell, cell);
   ctx.fillStyle = "#fff"; ctx.fillText("IN", cell/2, cell*0.2); ctx.fillText("OUT", (N-0.5)*cell, (N-1)*cell + cell*0.2);
+  
   ctx.strokeStyle = C.wall; ctx.lineWidth = Math.max(2, cell*0.09); ctx.lineCap = "round"; ctx.beginPath();
   for (r = 0; r < N; r++) for (c = 0; c < N; c++){ var w = W[r][c], x = c*cell, y = r*cell;
     if (w[0]){ ctx.moveTo(x,y); ctx.lineTo(x+cell,y); } if (w[1]){ ctx.moveTo(x+cell,y); ctx.lineTo(x+cell,y+cell); }
     if (w[2]){ ctx.moveTo(x,y+cell); ctx.lineTo(x+cell,y+cell); } if (w[3]){ ctx.moveTo(x,y); ctx.lineTo(x,y+cell); } }
   ctx.stroke();
-  beans.forEach(function(b){
-    if (b.got) return;
-    var k = 1 + 0.12*Math.sin(t/250), cx = (b.c+0.5)*cell, cy = (b.r+0.5)*cell;
-    ctx.save(); ctx.translate(cx, cy); ctx.rotate(-0.6); ctx.scale(k,k);
-    ctx.fillStyle = "#6b3a1e"; ctx.beginPath(); ctx.ellipse(0,0,cell*0.25,cell*0.17,0,0,7); ctx.fill();
-    ctx.strokeStyle = "#e9c98f"; ctx.lineWidth = Math.max(1.5, cell*0.04);
-    ctx.beginPath(); ctx.moveTo(-cell*0.22,0); ctx.quadraticCurveTo(0,-cell*0.1,cell*0.22,0); ctx.stroke(); ctx.restore();
-  });
+
+  if (beans){
+    beans.forEach(function(b){
+      if (b.got) return;
+      var k = 1 + 0.12*Math.sin(t/250), cx = (b.c+0.5)*cell, cy = (b.r+0.5)*cell;
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(-0.6); ctx.scale(k,k);
+      ctx.fillStyle = "#6b3a1e"; ctx.beginPath(); ctx.ellipse(0,0,cell*0.25,cell*0.17,0,0,7); ctx.fill();
+      ctx.strokeStyle = "#e9c98f"; ctx.lineWidth = Math.max(1.5, cell*0.04);
+      ctx.beginPath(); ctx.moveTo(-cell*0.22,0); ctx.quadraticCurveTo(0,-cell*0.1,cell*0.22,0); ctx.stroke(); ctx.restore();
+    });
+  }
+
   var fr = pr, fc = pc;
   if (mv){ var e = mv.t < 1 ? mv.t : 1; fr = mv.fr + (mv.tr - mv.fr)*e; fc = mv.fc + (mv.tc - mv.fc)*e; }
   ctx.font = cell*0.62 + "px serif"; ctx.fillStyle = "#000";

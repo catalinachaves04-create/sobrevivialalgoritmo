@@ -5,60 +5,227 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Elige tu propia aventura: sobreviví al algoritmo</title>
 <style>
-:root{
-  --bg:#efe0c8;--panel:#fbf3e4;--ink:#3a2314;--muted:#7a5a40;--accent:#a8691c;--accent-ink:#fff8ea;--floor:#e3cba6;--wall:#5a3a24;--line:#cfb48c;
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+:root {
+  --bg: #efe0c8;
+  --panel: #fbf3e4;
+  --ink: #3a2314;
+  --muted: #7a5a40;
+  --accent: #a8691c;
+  --accent-ink: #fff8ea;
+  --floor: #e3cba6;
+  --wall: #5a3a24;
+  --line: #cfb48c;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--bg:#1e130c;--panel:#2e1d12;--ink:#f3e4c9;--muted:#b99b78;--accent:#e0ad4a;--accent-ink:#241505;--floor:#3d2a1c;--wall:#c99a5b;--line:#4f3624}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1e130c;
+    --panel: #2e1d12;
+    --ink: #f3e4c9;
+    --muted: #b99b78;
+    --accent: #e0ad4a;
+    --accent-ink: #241505;
+    --floor: #3d2a1c;
+    --wall: #c99a5b;
+    --line: #4f3624;
+  }
 }
-:root[data-theme="dark"]{--bg:#1e130c;--panel:#2e1d12;--ink:#f3e4c9;--muted:#b99b78;--accent:#e0ad4a;--accent-ink:#241505;--floor:#3d2a1c;--wall:#c99a5b;--line:#4f3624}
+:root[data-theme="dark"] {
+  --bg: #1e130c;
+  --panel: #2e1d12;
+  --ink: #f3e4c9;
+  --muted: #b99b78;
+  --accent: #e0ad4a;
+  --accent-ink: #241505;
+  --floor: #3d2a1c;
+  --wall: #c99a5b;
+  --line: #4f3624;
+}
 html, body { height: 100%; margin: 0; }
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:Georgia,"Iowan Old Style",Palatino,serif;line-height:1.5;overflow:hidden;}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", Palatino, serif;
+  line-height: 1.5;
+  overflow: hidden;
+}
 
-/* Modales y Pantallas */
-.screen-view { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; z-index: 5; }
-#start-screen { background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%); }
-#intro-screen { background: #140a04; z-index: 6; }
+/* Pantallas y Contenedores */
+.screen-view {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  z-index: 5;
+}
+#start-screen {
+  background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%);
+}
+#intro-screen {
+  background: #140a04;
+  z-index: 6;
+}
 
-.title-card { background: var(--panel); border: 3px solid var(--accent); border-radius: 16px; padding: 32px 24px; max-width: 520px; width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-h1.main-title { font-size: 26px; margin: 0 0 12px; color: var(--accent); line-height: 1.3; }
-p.subtitle { font-size: 16px; color: var(--muted); margin: 0 0 24px; }
+.title-card {
+  background: var(--panel);
+  border: 3px solid var(--accent);
+  border-radius: 16px;
+  padding: 32px 24px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+h1.main-title {
+  font-size: 26px;
+  margin: 0 0 12px;
+  color: var(--accent);
+  line-height: 1.3;
+}
+p.subtitle {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
 
-/* Contenedor Multimedia de la Intro */
-.anim-wrapper { max-width: 640px; width: 100%; border-radius: 12px; overflow: hidden; border: 3px solid var(--accent); box-shadow: 0 8px 30px rgba(0,0,0,0.5); background: #000; margin-bottom: 20px; }
-.anim-wrapper img { width: 100%; height: auto; display: block; }
+/* Reproductor de Video Cutscene */
+.video-wrapper {
+  max-width: 640px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid var(--accent);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  background: #000;
+  margin-bottom: 20px;
+}
+.video-wrapper video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
 /* Interfaz Principal del Juego */
-main { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 10px; padding: 12px; }
-header { width: 100%; max-width: 720px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+main {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 10px;
+  padding: 12px;
+}
+header {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 h1.game-head { font-size: 20px; margin: 0; }
 .hud { display: flex; gap: 10px; align-items: center; font-size: 15px; }
-.chip { background: var(--panel); border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px; font-weight: 700; }
+.chip {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-weight: 700;
+}
 button { font: inherit; cursor: pointer; color: inherit; }
-.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 10px 20px; font-weight: 700; font-size: 16px; transition: transform 0.1s ease; }
+.btn {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
 .btn:active { transform: scale(0.97); }
 
-canvas { border: 3px solid var(--wall); border-radius: 8px; background: var(--floor); touch-action: none; max-width: 100%; }
+canvas {
+  border: 3px solid var(--wall);
+  border-radius: 8px;
+  background: var(--floor);
+  touch-action: none;
+  max-width: 100%;
+}
 #msg { margin: 0; color: var(--muted); font-size: 15px; text-align: center; min-height: 22px; }
 
 /* Controles Táctiles */
-.pad { display: none; grid-template-columns: repeat(3,56px); grid-template-rows: repeat(2,56px); gap: 6px; }
-.pad button { background: var(--panel); border: 2px solid var(--line); border-radius: 12px; font-size: 22px; touch-action: none; }
+.pad {
+  display: none;
+  grid-template-columns: repeat(3,56px);
+  grid-template-rows: repeat(2,56px);
+  gap: 6px;
+}
+.pad button {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-size: 22px;
+  touch-action: none;
+}
 .pad .u { grid-column: 2; }
 @media (pointer:coarse){ .pad { display: grid; } }
 
-/* Modales de Opciones */
-.overlay { position: fixed; inset: 0; background: rgba(20,10,4,.8); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
-.card { background: var(--panel); border: 3px solid var(--accent); border-radius: 16px; max-width: 520px; width: 100%; padding: 22px; box-shadow: 0 12px 40px rgba(0,0,0,.45); max-height: 92vh; overflow: auto; }
+/* Modales de Decisiones */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,10,4,.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+}
+.card {
+  background: var(--panel);
+  border: 3px solid var(--accent);
+  border-radius: 16px;
+  max-width: 520px;
+  width: 100%;
+  padding: 22px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+  max-height: 92vh;
+  overflow: auto;
+}
 .tag { font-weight: 700; color: var(--accent); margin-bottom: 8px; }
 .card p { margin: 0 0 16px; font-size: 18px; }
 .opts { display: grid; gap: 10px; }
-.opt { display: flex; gap: 12px; text-align: left; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; align-items: center; }
+.opt {
+  display: flex;
+  gap: 12px;
+  text-align: left;
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  align-items: center;
+}
 .opt:hover { border-color: var(--accent); }
-.opt b { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 14px; }
+.opt b {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
 .bad .tag { color: #d0533d; }
 .extra { border: 2px dashed var(--accent); border-radius: 12px; padding: 14px; margin: 0 0 16px; text-align: center; }
 .qr { display: inline-block; background: #fff; padding: 10px; border-radius: 8px; margin: 8px 0 4px; }
@@ -76,13 +243,15 @@ canvas { border: 3px solid var(--wall); border-radius: 8px; background: var(--fl
   </div>
 </div>
 
-<!-- 2. Pantalla de Introducción (Animación) -->
+<!-- 2. Pantalla de Introducción (Video Cutscene) -->
 <div id="intro-screen" class="screen-view" style="display: none;">
-  <div class="anim-wrapper">
-    <!-- Animación embebida directamente como SVG animado en Base64 -->
-    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450' width='100%' height='100%'><rect width='100%' height='100%' fill='%232a1810'/><g><animate attributeName='opacity' values='0.3;0.6;0.3' dur='4s' repeatCount='indefinite'/><circle cx='400' cy='225' r='300' fill='%23a8691c' opacity='0.2'/></g><text x='50%' y='40%' dominant-baseline='middle' text-anchor='middle' fill='%23fff8ea' font-family='Georgia, serif' font-size='32' font-weight='bold'>CAFÉ EL PROGRESO</text><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' fill='%23e0ad4a' font-family='Georgia, serif' font-size='20'>Lo tradicional se enfrenta a lo moderno...</text><g transform='translate(400, 310)' text-anchor='middle'><text y='0' fill='%23f3e4c9' font-size='16'>☕ Clientes de siempre vs. Algoritmos</text><text y='30' fill='%23f3e4c9' font-size='16'>¿Lograrás mantener en pie tu cafetería?</text></g></svg>" alt="Introducción Animada">
+  <div class="video-wrapper">
+    <video id="intro-video" autoplay muted loop playsinline controls>
+      <source src="intro_cutscenecoffee.mp4" type="video/mp4">
+      Tu navegador no soporta la reproducción de video HTML5.
+    </video>
   </div>
-  <button class="btn" id="play-game-btn">Continuar al juego ➔</button>
+  <button class="btn" id="play-game-btn">Saltar e ir al juego ➔</button>
 </div>
 
 <!-- 3. Pantalla del Juego de Laberinto -->
@@ -144,14 +313,18 @@ var ENDS = {
 };
 
 var W, beans, path, S, held = [], mv = null, pr, pc, branch, pend, modalOn, over, curBean, collected, cell = 40, C = {}, last = 0;
+var videoEl = document.getElementById("intro-video");
 
-// Gestión de Flujo de Pantallas
+// Flujo de Pantallas
 document.getElementById("start-btn").onclick = function() {
   document.getElementById("start-screen").style.display = "none";
   document.getElementById("intro-screen").style.display = "flex";
+  videoEl.currentTime = 0;
+  videoEl.play().catch(function(e){ console.log("Autoplay bloqueado hasta interacción:", e); });
 };
 
 document.getElementById("play-game-btn").onclick = function() {
+  videoEl.pause();
   document.getElementById("intro-screen").style.display = "none";
   document.getElementById("main-game").style.display = "flex";
   resize();

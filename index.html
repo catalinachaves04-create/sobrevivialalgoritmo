@@ -16,34 +16,14 @@
   --wall: #5a3a24;
   --line: #cfb48c;
   box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #1e130c;
-    --panel: #2e1d12;
-    --ink: #f3e4c9;
-    --muted: #b99b78;
-    --accent: #e0ad4a;
-    --accent-ink: #241505;
-    --floor: #3d2a1c;
-    --wall: #c99a5b;
-    --line: #4f3624;
+    --bg: #1e130c; --panel: #2e1d12; --ink: #f3e4c9; --muted: #b99b78;
+    --accent: #e0ad4a; --accent-ink: #241505; --floor: #3d2a1c; --wall: #c99a5b; --line: #4f3624;
   }
 }
-:root[data-theme="dark"] {
-  --bg: #1e130c;
-  --panel: #2e1d12;
-  --ink: #f3e4c9;
-  --muted: #b99b78;
-  --accent: #e0ad4a;
-  --accent-ink: #241505;
-  --floor: #3d2a1c;
-  --wall: #c99a5b;
-  --line: #4f3624;
-}
-html, body { height: 100%; margin: 0; }
+html, body { height: 100%; margin: 0; padding: 0; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body {
@@ -54,7 +34,7 @@ body {
   overflow: hidden;
 }
 
-/* Pantallas y Contenedores */
+/* Manejo de Pantallas */
 .screen-view {
   position: fixed;
   inset: 0;
@@ -66,13 +46,8 @@ body {
   text-align: center;
   z-index: 5;
 }
-#start-screen {
-  background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%);
-}
-#intro-screen {
-  background: #140a04;
-  z-index: 6;
-}
+#start-screen { background: radial-gradient(circle at center, var(--panel) 0%, var(--bg) 100%); z-index: 10; }
+#intro-screen { background: #140a04; z-index: 20; }
 
 .title-card {
   background: var(--panel);
@@ -83,19 +58,10 @@ body {
   width: 100%;
   box-shadow: 0 12px 40px rgba(0,0,0,0.3);
 }
-h1.main-title {
-  font-size: 26px;
-  margin: 0 0 12px;
-  color: var(--accent);
-  line-height: 1.3;
-}
-p.subtitle {
-  font-size: 16px;
-  color: var(--muted);
-  margin: 0 0 24px;
-}
+h1.main-title { font-size: 26px; margin: 0 0 12px; color: var(--accent); line-height: 1.3; }
+p.subtitle { font-size: 16px; color: var(--muted); margin: 0 0 24px; }
 
-/* Reproductor de Video Cutscene */
+/* Reproductor de Video */
 .video-wrapper {
   max-width: 640px;
   width: 100%;
@@ -106,21 +72,21 @@ p.subtitle {
   background: #000;
   margin-bottom: 20px;
 }
-.video-wrapper video {
-  width: 100%;
-  height: auto;
-  display: block;
-}
+.video-wrapper video { width: 100%; height: auto; display: block; }
 
 /* Interfaz Principal del Juego */
-main {
+main#main-game {
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100vw;
   height: 100vh;
   gap: 10px;
   padding: 12px;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
 }
 header {
   width: 100%;
@@ -129,17 +95,10 @@ header {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
 h1.game-head { font-size: 20px; margin: 0; }
 .hud { display: flex; gap: 10px; align-items: center; font-size: 15px; }
-.chip {
-  background: var(--panel);
-  border: 2px solid var(--line);
-  border-radius: 999px;
-  padding: 3px 12px;
-  font-weight: 700;
-}
+.chip { background: var(--panel); border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px; font-weight: 700; }
 button { font: inherit; cursor: pointer; color: inherit; }
 .btn {
   background: var(--accent);
@@ -149,9 +108,7 @@ button { font: inherit; cursor: pointer; color: inherit; }
   padding: 12px 24px;
   font-weight: 700;
   font-size: 16px;
-  transition: transform 0.1s ease, opacity 0.2s ease;
 }
-.btn:active { transform: scale(0.97); }
 
 canvas {
   border: 3px solid var(--wall);
@@ -162,24 +119,17 @@ canvas {
 }
 #msg { margin: 0; color: var(--muted); font-size: 15px; text-align: center; min-height: 22px; }
 
-/* Controles Táctiles */
 .pad {
   display: none;
   grid-template-columns: repeat(3,56px);
   grid-template-rows: repeat(2,56px);
   gap: 6px;
 }
-.pad button {
-  background: var(--panel);
-  border: 2px solid var(--line);
-  border-radius: 12px;
-  font-size: 22px;
-  touch-action: none;
-}
+.pad button { background: var(--panel); border: 2px solid var(--line); border-radius: 12px; font-size: 22px; touch-action: none; }
 .pad .u { grid-column: 2; }
 @media (pointer:coarse){ .pad { display: grid; } }
 
-/* Modales de Decisiones */
+/* Modales */
 .overlay {
   position: fixed;
   inset: 0;
@@ -188,7 +138,7 @@ canvas {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  z-index: 10;
+  z-index: 100;
 }
 .card {
   background: var(--panel);
@@ -197,43 +147,22 @@ canvas {
   max-width: 520px;
   width: 100%;
   padding: 22px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.45);
   max-height: 92vh;
   overflow: auto;
 }
 .tag { font-weight: 700; color: var(--accent); margin-bottom: 8px; }
 .card p { margin: 0 0 16px; font-size: 18px; }
 .opts { display: grid; gap: 10px; }
-.opt {
-  display: flex;
-  gap: 12px;
-  text-align: left;
-  background: transparent;
-  border: 2px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  align-items: center;
-}
-.opt:hover { border-color: var(--accent); }
-.opt b {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-}
+.opt { display: flex; gap: 12px; text-align: left; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; align-items: center; }
+.opt b { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
 .bad .tag { color: #d0533d; }
 .extra { border: 2px dashed var(--accent); border-radius: 12px; padding: 14px; margin: 0 0 16px; text-align: center; }
-.qr { display: inline-block; background: #fff; padding: 10px; border-radius: 8px; margin: 8px 0 4px; }
+.qr { display: inline-block; background: #fff; padding: 10px; border-radius: 8px; }
 </style>
 </head>
 <body>
 
-<!-- 1. Pantalla de Portada -->
+<!-- 1. Portada -->
 <div id="start-screen" class="screen-view">
   <div class="title-card">
     <div style="font-size: 40px; margin-bottom: 8px;">☕</div>
@@ -243,18 +172,18 @@ canvas {
   </div>
 </div>
 
-<!-- 2. Pantalla de Introducción (Video Cutscene) -->
+<!-- 2. Video Cutscene -->
 <div id="intro-screen" class="screen-view" style="display: none;">
   <div class="video-wrapper">
     <video id="intro-video" autoplay muted loop playsinline controls>
       <source src="intro_cutscenecoffee.mp4" type="video/mp4">
-      Tu navegador no soporta la reproducción de video HTML5.
+      Tu navegador no soporta reproducción de video.
     </video>
   </div>
   <button class="btn" id="play-game-btn">Saltar e ir al juego ➔</button>
 </div>
 
-<!-- 3. Pantalla del Juego de Laberinto -->
+<!-- 3. Juego de Laberinto -->
 <main id="main-game">
   <header>
     <h1 class="game-head">☕ Laberinto del café</h1>
@@ -277,7 +206,7 @@ canvas {
 
 <!-- Modal de Decisiones -->
 <div class="overlay" id="modal" hidden>
-  <div class="card" role="dialog" aria-modal="true" aria-labelledby="mq">
+  <div class="card">
     <div class="tag" id="mtag"></div>
     <p id="mq"></p>
     <div id="mextra"></div>
@@ -315,21 +244,26 @@ var ENDS = {
 var W, beans, path, S, held = [], mv = null, pr, pc, branch, pend, modalOn, over, curBean, collected, cell = 40, C = {}, last = 0;
 var videoEl = document.getElementById("intro-video");
 
-// Flujo de Pantallas
+// Cambio de Pantallas
 document.getElementById("start-btn").onclick = function() {
   document.getElementById("start-screen").style.display = "none";
   document.getElementById("intro-screen").style.display = "flex";
   videoEl.currentTime = 0;
-  videoEl.play().catch(function(e){ console.log("Autoplay bloqueado hasta interacción:", e); });
+  videoEl.play().catch(function(e){ console.log("Autoplay:", e); });
 };
 
-document.getElementById("play-game-btn").onclick = function() {
+document.getElementById("play-game-btn").onclick = startGame;
+
+function startGame(){
   videoEl.pause();
+  document.getElementById("start-screen").style.display = "none";
   document.getElementById("intro-screen").style.display = "none";
   document.getElementById("main-game").style.display = "flex";
-  resize();
-  newGame();
-};
+  setTimeout(function(){
+    resize();
+    newGame();
+  }, 50);
+}
 
 function gen(){
   var len;
@@ -359,7 +293,7 @@ function gen(){
 function newGame(){
   gen(); pr = 0; pc = 0; mv = null; held = []; branch = null; pend = 0; modalOn = false; over = false; collected = 0;
   document.getElementById("modal").hidden = true;
-  setMsg("Movete con las flechas del teclado y encontrá los 4 granos de café.");
+  setMsg("Movete con las flechas y encontrá los 4 granos de café.");
   hud();
 }
 
@@ -428,7 +362,7 @@ function pick(t){
   else if (t.indexOf("node:") === 0) node(t.slice(5));
   else if (t.indexOf("b:") === 0){ branch = t.slice(2); closeModal(); }
   else if (t === "F1") ending(1);
-  else if (t === "F2"){ pend = 2; closeModal(); setMsg("¡Buen camino! Ahora llegá hasta la salida (OUT)."); }
+  else if (t === "F2"){ pend = 2; closeModal(); setMsg("¡Buen camino! Llegá a la salida (OUT)."); }
 }
 
 function ending(n){
@@ -436,15 +370,11 @@ function ending(n){
   show("Resultado final " + n, ENDS[n], [["Jugar de nuevo", newGame]], n === 1);
   var x = document.getElementById("mextra");
   if (n === 1){
-    x.innerHTML = '<div class="extra"><p></p><button class="btn">Aceptar el mes gratis</button></div>';
-    var p = x.querySelector("p"), b = x.querySelector("button");
-    p.textContent = "Te ofrecen 1 mes gratis en la plataforma recomendadora de cafeterías para que más gente te encuentre.";
-    b.onclick = function(){ p.textContent = "¡Mes gratis activado! Tu cafetería ya aparece en la plataforma."; b.remove(); };
+    x.innerHTML = '<div class="extra"><p>Te ofrecen 1 mes gratis en la plataforma.</p><button class="btn" id="free-btn">Aceptar</button></div>';
+    document.getElementById("free-btn").onclick = function(){ this.parentNode.querySelector("p").textContent = "¡Activado!"; this.remove(); };
   } else {
-    x.innerHTML = '<div class="extra"><h2>¿Es este el final?</h2><div class="qr" id="qr"></div><p>Escaneá el QR para seguir con la siguiente historia.</p></div>';
-    var q = document.getElementById("qr");
-    try { new QRCode(q, { text: NEXT_STORY_URL, width: 140, height: 140, colorDark: "#000000", colorLight: "#ffffff" }); }
-    catch (err) { q.textContent = NEXT_STORY_URL; }
+    x.innerHTML = '<div class="extra"><div class="qr" id="qr"></div><p>Escaneá el QR.</p></div>';
+    try { new QRCode(document.getElementById("qr"), { text: NEXT_STORY_URL, width: 130, height: 130 }); } catch (e){}
   }
 }
 
@@ -476,9 +406,8 @@ function draw(t){
     if (b.got) return;
     var k = 1 + 0.12*Math.sin(t/250), cx = (b.c+0.5)*cell, cy = (b.r+0.5)*cell;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(-0.6); ctx.scale(k,k);
-    ctx.shadowColor = C.accent; ctx.shadowBlur = cell*0.35; ctx.fillStyle = "#6b3a1e";
-    ctx.beginPath(); ctx.ellipse(0,0,cell*0.25,cell*0.17,0,0,7); ctx.fill();
-    ctx.shadowBlur = 0; ctx.strokeStyle = "#e9c98f"; ctx.lineWidth = Math.max(1.5, cell*0.04);
+    ctx.fillStyle = "#6b3a1e"; ctx.beginPath(); ctx.ellipse(0,0,cell*0.25,cell*0.17,0,0,7); ctx.fill();
+    ctx.strokeStyle = "#e9c98f"; ctx.lineWidth = Math.max(1.5, cell*0.04);
     ctx.beginPath(); ctx.moveTo(-cell*0.22,0); ctx.quadraticCurveTo(0,-cell*0.1,cell*0.22,0); ctx.stroke(); ctx.restore();
   });
   var fr = pr, fc = pc;
@@ -504,4 +433,4 @@ window.addEventListener("resize", resize);
 requestAnimationFrame(frame);
 </script>
 </body>
-</html> 
+</html>
